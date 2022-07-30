@@ -148,6 +148,30 @@ class DbManager {
         return updated;
     }
 
+    async execProcedure(schema: String, procedureName: String, fields: any){
+        var statement = `CALL ${schema}.${procedureName}(${fields})`;
+        console.log(statement);
+        const procedureResult = new Promise((resolve, reject) => {
+            this.pool.query(statement, (error, results) => {
+                if(error){
+                    console.log(error);
+                    reject({
+                        status: 0,
+                        msg: "Procedure failed"
+                    });
+                } else {
+                    resolve({
+                        status: 1,
+                        msg: "Procedure completed",
+                        data: results[0]
+                    })
+                }
+            })
+        })
+        return procedureResult;
+    }
+
+
 }
 
 
